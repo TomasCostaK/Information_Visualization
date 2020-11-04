@@ -1,95 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html >
+<html>
 
 <head>
     <meta charset="utf-8">
-    <title>First D3 Example</title>
+    <script src="http://d3js.org/d3.v5.js"></script>
+    <script>
+        let width = 1000;
+        let height = 500;
+        let margin = 50;
+        
+        function draw(data) {
+            // Reuse the visualization code from scatterplot
+            // Change d[0] and d[1] as specified below
 
-    <style type="text/css">
-        div.bar {
-            display: inline-block;
-            width: 20px;
-            height: 75px;
-            margin-right: 2px;
-            background-color: teal;
+            let svg = d3.select("body").append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .style("background-color", "white");
+
+
+            let circles = svg.selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle") // initial declarationm
+                .attr("r", "10");
+
+            circles.attr("cx", function (d, i) {
+                return  i*50;
+            });
+
+            circles.attr("cy", function (d, i) {
+                return  d.Numero_de_Alunos;
+            });
+
+            console.log(data) //working properly
+
+            let labels = svg.selectAll("text")
+                .data(data)
+                .enter()
+                .append("text")
+                    .text(function (d,i) {
+                        return "(" + d.Ano + "," + d.Numero_de_Alunos + ")";
+                    })
+                    .attr("x", function (d, i) {
+                            return i*50 + 2;
+                    })
+                    .attr("y", function (d, i) {
+                            return d.Numero_de_Alunos -10;
+                    })
+                    .attr("fill", function (d) {
+                        return "red";
+                    })
+
+            
+            let y_extent = d3.extent(data, function(d) {return d.Numero_de_Alunos });
+            let y_scale = d3.scaleLinear()
+                .range([margin, height - margin])
+                .domain(y_extent);
+            
+            circles.attr("cy", function (d) {return y_scale(d. Numero_de_Alunos);})
+            labels.attr("y", function (d) {return y_scale(d. Numero_de_Alunos);})
+        
+            // Defining x Scale
+            let x_extent = d3.extent(data, function(d) {return d.Ano.length() });
+            let x_scale = d3.scaleLinear()
+                .range([margin, height - margin])
+                .domain(x_extent);
+
+            circles.attr("cx", function (d) {return x_scale(d. Numero_de_Alunos);})
+            labels.attr("x", function (d) {return x_scale(d. Numero_de_Alunos);})
         }
-    </style>
-
-    <script type="text/javascript" src="http://d3js.org/d3.v5.js"></script>
-    <!--script type="text/javascript" src="../d3/d3.min.js"></script-->
-
+    </script>
 </head>
 
-
 <body>
-    <div class="div_d3">    </div>
-    <script type="text/javascript">
-        let w = 500;
-        let h = 100;
-
-        let svg = d3.select("body").append("svg")
-                .attr("width", w)
-                .attr("height", h)
-                .style("background-color", "white");
-
-        let dataset = [
-            [ 5, 20 ],
-            [ 480, 90 ],
-            [ 250, 50 ],
-            [ 100, 33 ],
-            [ 330, 95 ],
-            [ 410, 12 ],
-            [ 475, 44 ],
-            [ 25, 67 ],
-            [ 85, 21 ],
-            [ 220, 88 ]
-            ];
-
-
-
-        let circles = svg.selectAll("circle")
-            .data(dataset)
-            .enter()
-            .append("circle") // initial declarationm
-            .attr("cx", 20)
-            .attr("cy", 20)
-            .attr("r", "5");
-
-        circles.attr("cx", function (d, i) {
-            dataset[i] = [];
-            // Why is this necessary?
-            dataset[i][0] = d[0];
-            dataset[i][1] = d[1];
-            dataset[i][2] = Math.floor((Math.random() * 500));
-            return  d[0];
-        });
-
-        circles.attr("cy", function (d, i) {
-            return  d[1];
-        });
-
-        console.log(dataset) //working properly
-
-        svg.selectAll("text")
-            .data(dataset)
-            .enter()
-            .append("text")
-                .text(function (d,i) {
-                    return "(" + d[0] + "," + d[1] + ")";
-                })
-                .attr("x", function (d, i) {
-                        return d[0] + 2;
-                })
-                .attr("y", function (d, i) {
-                        return d[1] + 2;
-                })
-                .attr("fill", function (d) {
-                    return "red";
-                })
-
-
-
-
+    <script>
+            d3.json("MIECT_Alunos_Ano.json")
+                .then(draw)
+                .catch(function(err){console.log(err)});
     </script>
 </body>
 
