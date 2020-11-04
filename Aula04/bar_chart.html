@@ -75,7 +75,7 @@
                     return d;
                 })
                 .attr("x", function (d, i) {
-                        return i * (w / dataset.length);
+                        return i * (w / dataset.length) + 5;
                 })
                 .attr("y", function (d) {
                     return h - (d * 4) + 15;
@@ -110,9 +110,19 @@
                         return d3.descending(a, b);
                     }
                 })
+                .transition()
+                    .style("fill", "red")
+                .transition()
+                    .delay(500) //wait 100ms then remove
+                    .duration(2500)
+                    .ease(d3.easeLinear)
+                    .style("fill", function(d,i) {
+                        return "rgb(100, 0, " + (d * 10) + ")"
+                    })
                 .attr("x", function(d, i) {
-                    return i * (w / dataset.length);
+                    return i * (w / dataset.length) ;
                 })
+                
 
             svg.selectAll("text")
             .sort(function(a, b) {
@@ -122,8 +132,11 @@
                     return d3.descending(a, b);
                 }
             })
+            .transition()
+            .duration(2000)
+            .ease(d3.easeCubic)
             .attr("x", function(d, i) {
-                return i * (w / dataset.length);
+                return i * (w / dataset.length) + 5;
             })
         };
 
@@ -132,6 +145,8 @@
             .attr("id","sort_button")
             .text("Sort bars")
             .on("click", sortBars);
+
+
 
     </script>
 </body>
